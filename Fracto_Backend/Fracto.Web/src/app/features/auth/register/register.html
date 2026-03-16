@@ -1,0 +1,127 @@
+<div class="min-h-[calc(100vh-theme('spacing.16')-theme('spacing.64'))] bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl w-full space-y-8 h-full flex flex-col">
+    
+    <!-- Top Tabs (Login / Register) -->
+    <div class="flex justify-center border-b border-gray-200">
+      <div class="flex gap-16">
+        <a routerLink="/login" class="text-gray-500 hover:text-gray-800 font-medium py-3 border-b-2 border-transparent hover:border-gray-300 text-lg transition-colors">Login</a>
+        <a routerLink="/register" class="text-blue-500 font-medium py-3 border-b-2 border-blue-500 text-lg">Register</a>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center justify-center gap-12 mt-12 w-full">
+      
+      <!-- Left side specific illustration container -->
+      <div class="hidden md:flex w-1/2 justify-center items-center">
+        <div class="w-80 h-80 bg-green-50 rounded-full flex items-center justify-center relative overflow-visible shadow-inner">
+          <svg class="w-48 h-48 text-green-200" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path></svg>
+          
+          <!-- Decorative floating elements -->
+          <div class="absolute top-10 right-0 w-16 h-16 bg-blue-100 rounded-lg shadow-md rotate-12 border border-blue-200 flex items-center justify-center"><div class="w-8 h-8 rounded-full bg-blue-300"></div></div>
+          <div class="absolute bottom-10 left-0 w-20 h-16 bg-pink-100 rounded-lg shadow-md -rotate-6 border border-pink-200 flex flex-col gap-1 p-2"><div class="w-full h-2 bg-pink-300 rounded"></div><div class="w-3/4 h-2 bg-pink-300 rounded"></div></div>
+          <div class="absolute -right-4 bottom-20 w-12 h-12 bg-yellow-100 rounded-full shadow-md border border-yellow-200 flex items-center justify-center"><div class="w-6 h-6 rotate-45 bg-yellow-300"></div></div>
+        </div>
+      </div>
+
+      <!-- Right side forms -->
+      <div class="w-full md:w-1/2 max-w-md border border-gray-100 rounded-xl p-8 shadow-sm">
+        
+        @if (errorMessage) {
+          <div class="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm border border-red-100">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          
+          <!-- Full Name -->
+          <div>
+            <label for="fullName" class="sr-only">Full Name</label>
+            <div class="text-sm text-gray-600 mb-2">Full Name <span class="text-red-500">*</span></div>
+            <input 
+              id="fullName" 
+              type="text" 
+              formControlName="fullName"
+              class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
+              placeholder="e.g. John Doe"
+            >
+            @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid) {
+              <div class="text-red-500 text-xs mt-1">Full Name is required</div>
+            }
+          </div>
+
+          <!-- Username -->
+          <div>
+            <label for="username" class="sr-only">Username</label>
+            <div class="text-sm text-gray-600 mb-2">Username <span class="text-red-500">*</span></div>
+            <input 
+              id="username" 
+              type="text" 
+              formControlName="username"
+              class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
+              placeholder="Username"
+            >
+            @if (registerForm.get('username')?.touched && registerForm.get('username')?.invalid) {
+              <div class="text-red-500 text-xs mt-1">Username is required</div>
+            }
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="sr-only">Email ID</label>
+            <div class="text-sm text-gray-600 mb-2">Email ID <span class="text-red-500">*</span></div>
+            <input 
+              id="email" 
+              type="email" 
+              formControlName="email"
+              class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
+              placeholder="Email ID"
+            >
+            @if (registerForm.get('email')?.touched) {
+              @if (registerForm.get('email')?.hasError('required')) {
+                <div class="text-red-500 text-xs mt-1">Email is required</div>
+              } @else if (registerForm.get('email')?.hasError('email')) {
+                <div class="text-red-500 text-xs mt-1">Please enter a valid email address</div>
+              }
+            }
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="sr-only">Create Password</label>
+            <div class="text-sm text-gray-600 mb-2">Create Password <span class="text-red-500">*</span></div>
+            <input 
+              id="password" 
+              type="password" 
+              formControlName="password"
+              class="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-400 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" 
+              placeholder="Password (minimum 6 characters)"
+            >
+            @if (registerForm.get('password')?.touched) {
+              @if (registerForm.get('password')?.hasError('required')) {
+                <div class="text-red-500 text-xs mt-1">Password is required</div>
+              } @else if (registerForm.get('password')?.hasError('minlength')) {
+                <div class="text-red-500 text-xs mt-1">Password must be at least 6 characters long</div>
+              }
+            }
+          </div>
+
+          <div class="text-xs text-gray-500 text-center">
+            By registering, you agree to our <a href="#" class="text-blue-500 hover:underline">Terms of Service</a> & <a href="#" class="text-blue-500 hover:underline">Privacy Policy</a>
+          </div>
+
+          <div>
+            <button 
+              type="submit" 
+              [disabled]="isLoading"
+              class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#00a5df] hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a5df] transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {{ isLoading ? 'Registering...' : 'Register' }}
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

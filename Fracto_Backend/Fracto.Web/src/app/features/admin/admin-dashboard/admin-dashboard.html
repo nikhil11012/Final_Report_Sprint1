@@ -1,0 +1,370 @@
+<div class="bg-gray-50 min-h-[calc(100vh-64px)] py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Admin Control Panel</h1>
+      <p class="text-gray-500 mt-1">Manage users, doctors, and platform health.</p>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
+      <div class="flex border-b border-gray-200 overflow-x-auto">
+        <button 
+          (click)="setTab('stats')"
+          [class]="activeTab === 'stats' ? 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-blue-600 text-blue-600' : 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'">
+          Overview
+        </button>
+        <button 
+          (click)="setTab('users')"
+          [class]="activeTab === 'users' ? 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-blue-600 text-blue-600' : 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'">
+          User Management
+        </button>
+        <button 
+          (click)="setTab('doctors')"
+          [class]="activeTab === 'doctors' ? 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-blue-600 text-blue-600' : 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'">
+          Doctor Management
+        </button>
+        <button 
+          (click)="setTab('appointments')"
+          [class]="activeTab === 'appointments' ? 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-blue-600 text-blue-600' : 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'">
+          Global Appointments
+        </button>
+        <button 
+          (click)="setTab('specializations')"
+          [class]="activeTab === 'specializations' ? 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-blue-600 text-blue-600' : 'px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'">
+          Specializations
+        </button>
+      </div>
+
+      <div class="p-6 min-h-[400px]">
+        
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="flex justify-center py-20">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error" class="bg-red-50 text-red-600 p-4 rounded-lg flex items-center mb-6">
+          <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          {{ error }}
+        </div>
+
+        <!-- content based on active tab -->
+        <div *ngIf="!isLoading && !error">
+          
+          <!-- TAB: STATS -->
+          <div *ngIf="activeTab === 'stats'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all border-l-4 border-blue-500">
+              <div class="text-sm font-medium text-gray-500 uppercase">Total Users</div>
+              <div class="text-3xl font-bold text-gray-900 mt-2">{{ stats?.totalUsers }}</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all border-l-4 border-green-500">
+              <div class="text-sm font-medium text-gray-500 uppercase">Total Doctors</div>
+              <div class="text-3xl font-bold text-gray-900 mt-2">{{ stats?.totalDoctors }}</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all border-l-4 border-purple-500">
+              <div class="text-sm font-medium text-gray-500 uppercase">Total Appointments</div>
+              <div class="text-3xl font-bold text-gray-900 mt-2">{{ stats?.totalAppointments }}</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all border-l-4 border-yellow-500 shadow-yellow-50">
+              <div class="text-sm font-medium text-gray-500 uppercase">Pending Approval</div>
+              <div class="text-3xl font-bold text-yellow-600 mt-2">{{ stats?.pendingAppointments }}</div>
+            </div>
+          </div>
+
+          <!-- TAB: USERS -->
+          <div *ngIf="activeTab === 'users'" class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let user of users">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-3">
+                        {{ user.username[0].toUpperCase() }}
+                      </div>
+                      <div class="text-sm font-medium text-gray-900">{{ user.fullName || user.username }}</div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span [class]="user.role === 2 ? 'px-2 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-700' : 'px-2 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600'">
+                      {{ user.role === 2 ? 'Admin' : 'User' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.createdAtUtc | date:'shortDate' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button (click)="openEditUser(user)" class="text-blue-600 hover:text-blue-900 mr-4 font-semibold">Edit</button>
+                    <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TAB: DOCTORS -->
+          <div *ngIf="activeTab === 'doctors'">
+            <div class="flex justify-end mb-4">
+              <button (click)="openAddDoctor()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Add Doctor
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Specialization</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">City</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr *ngFor="let doc of doctors">
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">Dr. {{ doc.fullName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ doc.specializationName }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ doc.city }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span [class]="doc.isActive ? 'px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700' : 'px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700'">
+                        {{ doc.isActive ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button (click)="openEditDoctor(doc)" class="text-blue-600 hover:text-blue-900 mr-4 font-semibold">Edit</button>
+                      <button (click)="toggleDoctor(doc.doctorId)" class="text-gray-600 hover:text-gray-900 mr-4 font-semibold">
+                        {{ doc.isActive ? 'Deactivate' : 'Activate' }}
+                      </button>
+                      <button (click)="deleteDoctor(doc.doctorId)" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB: APPOINTMENTS -->
+          <div *ngIf="activeTab === 'appointments'" class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Doctor</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date/Time</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let apt of appointments">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ apt.appointmentId }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">{{ apt.userName }}</div>
+                    <div class="text-xs text-gray-500">{{ apt.userEmail }}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">Dr. {{ apt.doctorName }}</div>
+                    <div class="text-xs text-gray-500">{{ apt.specializationName }}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">{{ apt.appointmentDate | date:'mediumDate' }}</div>
+                    <div class="text-xs text-gray-500">{{ apt.timeSlot }}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span [class]="'px-2 py-1 text-xs font-bold rounded-full ' + getStatusClass(apt.status)">
+                      {{ getStatusLabel(apt.status) }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button 
+                      *ngIf="apt.status === 1" 
+                      (click)="approveApt(apt.appointmentId)" 
+                      class="text-green-600 hover:text-green-900 mr-4 font-semibold">
+                      Approve
+                    </button>
+                    <button 
+                      *ngIf="apt.status === 2" 
+                      (click)="completeApt(apt.appointmentId)" 
+                      class="text-indigo-600 hover:text-indigo-900 mr-4 font-semibold">
+                      Complete
+                    </button>
+                    <button 
+                      *ngIf="apt.status < 4" 
+                      (click)="cancelApt(apt.appointmentId)" 
+                      class="text-red-600 hover:text-red-900 font-semibold">
+                      Cancel
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TAB: SPECIALIZATIONS -->
+          <div *ngIf="activeTab === 'specializations'">
+            <div class="flex justify-end mb-4">
+              <button (click)="openAddSpec()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Add Specialization
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr *ngFor="let spec of specializations">
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{ spec.name }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ spec.description }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button (click)="openEditSpec(spec)" class="text-blue-600 hover:text-blue-900 mr-4 font-semibold">Edit</button>
+                      <button (click)="deleteSpec(spec.specializationId)" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- User Edit Modal -->
+    <div *ngIf="showUserModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-gray-900">Edit User</h2>
+          <button (click)="showUserModal = false" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" [(ngModel)]="userForm.fullName" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" [(ngModel)]="userForm.email" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <select [(ngModel)]="userForm.role" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500">
+              <option [ngValue]="1">User</option>
+              <option [ngValue]="2">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="p-6 bg-gray-50 flex gap-4">
+          <button (click)="showUserModal = false" class="flex-1 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
+          <button (click)="saveUser()" class="flex-1 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor Add/Edit Modal -->
+    <div *ngIf="showDoctorModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-gray-900">{{ isEditingDoctor ? 'Edit Doctor' : 'Add New Doctor' }}</h2>
+          <button (click)="showDoctorModal = false" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" [(ngModel)]="doctorForm.fullName" placeholder="e.g. John Doe" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+            <input type="text" [(ngModel)]="doctorForm.city" placeholder="e.g. New York" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+            <select [(ngModel)]="doctorForm.specializationId" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500">
+              <option *ngFor="let s of specializations" [value]="s.specializationId">{{ s.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Profile Image</label>
+            <div class="flex items-center gap-4">
+              <div class="w-20 h-20 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center relative">
+                <img *ngIf="doctorForm.profileImagePath" [src]="doctorForm.profileImagePath" class="w-full h-full object-cover" />
+                <svg *ngIf="!doctorForm.profileImagePath" class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                
+                <!-- Upload Overlay -->
+                <div *ngIf="isUploadingDoctorImage" class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center">
+                  <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                </div>
+              </div>
+              <div class="flex-1">
+                <label class="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                  Select File
+                  <input type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" />
+                </label>
+                <p class="text-xs text-gray-500 mt-1">Recommended: Square image, max 2MB.</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="isActive" [(ngModel)]="doctorForm.isActive" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+            <label for="isActive" class="ml-2 block text-sm text-gray-900">Active Profile</label>
+          </div>
+        </div>
+        <div class="p-6 bg-gray-50 flex gap-4">
+          <button (click)="showDoctorModal = false" class="flex-1 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
+          <button (click)="saveDoctor()" class="flex-1 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">{{ isEditingDoctor ? 'Update Doctor' : 'Create Profile' }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Specialization Add/Edit Modal -->
+    <div *ngIf="showSpecModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+          <h2 class="text-xl font-bold text-gray-900">{{ isEditingSpec ? 'Edit Specialization' : 'Add New Specialization' }}</h2>
+          <button (click)="showSpecModal = false" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Specialization Name</label>
+            <input type="text" [(ngModel)]="specForm.name" placeholder="e.g. Cardiology" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea [(ngModel)]="specForm.description" rows="3" placeholder="Brief description of the specialty..." class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+          </div>
+        </div>
+        <div class="p-6 bg-gray-50 flex gap-4">
+          <button (click)="showSpecModal = false" class="flex-1 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
+          <button (click)="saveSpec()" class="flex-1 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">{{ isEditingSpec ? 'Update' : 'Create' }}</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

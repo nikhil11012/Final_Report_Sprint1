@@ -1,0 +1,122 @@
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      
+      <!-- Left side: Logo & Navigation -->
+      <div class="flex items-center gap-8">
+        <!-- Logo -->
+        <a routerLink="/" class="flex-shrink-0 flex items-center gap-1 cursor-pointer">
+          <div class="w-3 h-3 bg-cyan-400 rounded-full"></div>
+          <span class="text-2xl font-bold text-blue-900 tracking-tight">fracto</span>
+          <div class="w-3 h-3 bg-cyan-400 rounded-full mt-2"></div>
+        </a>
+
+        <!-- Main Nav -->
+        <nav class="hidden md:flex space-x-6">
+          <a routerLink="/" class="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors">Find Doctors</a>
+          @if (authService.currentUser()) {
+            <a routerLink="/my-appointments" class="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors">My Appointments</a>
+            
+            @if (authService.isAdmin()) {
+              <a routerLink="/admin" class="text-gray-700 hover:text-blue-600 font-medium px-2 py-1 transition-colors">System Admin</a>
+            }
+          }
+        </nav>
+      </div>
+
+      <!-- Right side: Actions & Auth -->
+      <div class="flex items-center gap-4">
+        <a href="#" class="hidden lg:block text-sm text-gray-500 hover:text-gray-900">For Providers</a>
+        <a href="#" class="hidden lg:block text-sm text-gray-500 hover:text-gray-900">Security & help</a>
+        
+        @if (authService.currentUser(); as user) {
+          <!-- Notifications Bell -->
+          <div class="relative">
+            <button (click)="toggleNotifications()" class="p-2 text-gray-500 hover:text-blue-600 transition-colors relative">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+              </svg>
+              @if (notificationService.unreadCount() > 0) {
+                <span class="absolute top-1.5 right-1.5 flex h-4 w-4">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white items-center justify-center font-bold">
+                    {{ notificationService.unreadCount() }}
+                  </span>
+                </span>
+              }
+            </button>
+
+            <!-- Notifications Dropdown -->
+            <div *ngIf="showNotifications" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div class="px-4 py-3 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+                <span class="font-bold text-gray-900">Notifications</span>
+                <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">{{ notificationService.notifications().length }} Recent</span>
+              </div>
+              <div class="max-h-96 overflow-y-auto">
+                <div *ngFor="let msg of notificationService.notifications(); let i = index" class="px-4 py-3 border-b border-gray-50 hover:bg-blue-50/30 transition-colors group flex justify-between items-start gap-4">
+                  <div class="flex-1">
+                    <p class="text-sm text-gray-700 leading-relaxed">{{ msg }}</p>
+                    <span class="text-[10px] text-gray-400 mt-1 block">Just now</span>
+                  </div>
+                  <button 
+                    (click)="notificationService.removeNotification(i); $event.stopPropagation()"
+                    class="text-gray-300 hover:text-red-500 transition-colors p-1 opacity-0 group-hover:opacity-100"
+                    title="Delete notification"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div *ngIf="notificationService.notifications().length === 0" class="px-4 py-10 text-center text-gray-400">
+                  <svg class="w-10 h-10 mx-auto mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                  </svg>
+                  <p class="text-xs">No notifications yet</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Dropdown & Profile Image -->
+          <div class="flex items-center gap-4 ml-4 pl-4 border-l border-gray-200">
+            <!-- File input and native label trigger -->
+            <input type="file" id="profileImageUpload" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+            
+            <label 
+              for="profileImageUpload"
+              class="relative w-8 h-8 rounded-full overflow-hidden bg-gray-200 cursor-pointer border-2 border-transparent hover:border-blue-500 transition-colors flex flex-shrink-0"
+              title="Click to update profile image"
+            >
+              @if (user.profileImagePath) {
+                <img [src]="env.serverUrl + user.profileImagePath" alt="Profile" class="w-full h-full object-cover" />
+              } @else {
+                <!-- Default Avatar SVG -->
+                <svg class="w-full h-full text-gray-500 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              }
+            </label>
+            
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-gray-700 leading-tight">Hi, {{ user.username }}</span>
+              <div class="flex items-center gap-2 mt-0.5">
+                <a routerLink="/my-appointments" class="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors">My Appointments</a>
+                <span class="text-gray-300 text-xs">|</span>
+                <button (click)="logout()" class="text-xs font-medium text-red-600 hover:text-red-800 transition-colors text-left">
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <!-- Login/Signup Button -->
+          <a routerLink="/login" class="ml-4 px-4 py-2 border border-gray-300 rounded font-medium text-gray-700 hover:bg-gray-50 transition-colors text-sm">
+            Login / Signup
+          </a>
+        }
+      </div>
+
+    </div>
+  </div>
+</header>

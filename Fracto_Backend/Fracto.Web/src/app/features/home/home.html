@@ -1,0 +1,189 @@
+<div class="flex flex-col min-h-screen">
+  
+  <!-- Hero Section -->
+  <section class="bg-[#f0f0f5] pt-12 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <!-- Optional background decorative elements could go here -->
+    
+    <div class="max-w-7xl mx-auto flex flex-col items-center">
+      
+      <!-- Search Container -->
+      <div class="w-full max-w-5xl bg-white rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-4 overflow-hidden border border-gray-200 z-10 p-2 gap-2">
+        
+        <!-- Location Dropdown -->
+        <div class="flex items-center px-4 py-2 border rounded-md hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+          <svg class="w-5 h-5 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <select [(ngModel)]="selectedCity" (change)="searchDoctors()" class="w-full focus:outline-none text-gray-800 bg-transparent cursor-pointer">
+            <option value="">All Cities</option>
+            <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+          </select>
+        </div>
+
+        <!-- Specialization Dropdown -->
+        <div class="flex items-center px-4 py-2 border rounded-md hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+          <svg class="w-5 h-5 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+          <select [(ngModel)]="selectedSpecializationId" (change)="searchDoctors()" class="w-full focus:outline-none text-gray-800 bg-transparent cursor-pointer">
+            <option [ngValue]="null">All Specialties</option>
+            <option *ngFor="let spec of specializations" [ngValue]="spec.specializationId">{{ spec.name }}</option>
+          </select>
+        </div>
+
+        <!-- Date Picker -->
+        <div class="flex items-center px-4 py-2 border rounded-md hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+          <svg class="w-5 h-5 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <input type="date" [(ngModel)]="searchDate" class="w-full focus:outline-none text-gray-800 bg-transparent cursor-pointer" />
+        </div>
+
+        <!-- Ratings Filter -->
+        <div class="flex items-center px-4 py-2 border rounded-md hover:bg-gray-50 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+          <svg class="w-5 h-5 text-yellow-400 mr-2 shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+          <select [(ngModel)]="minRating" (change)="searchDoctors()" class="w-full focus:outline-none text-gray-800 bg-transparent cursor-pointer">
+            <option [ngValue]="null">Any Rating</option>
+            <option [ngValue]="4">4.0+ Stars</option>
+            <option [ngValue]="4.5">4.5+ Stars</option>
+          </select>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Doctor List Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 w-full z-20 mb-20">
+    
+    <div *ngIf="isLoading" class="flex justify-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    </div>
+
+    <div *ngIf="!isLoading && doctors.length === 0" class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center text-gray-500">
+      <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <p class="text-xl font-medium">No doctors found matching your criteria</p>
+      <p class="text-md mt-2">Try adjusting your filters or searching a different city.</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative mt-10">
+      <!-- Doctor Cards -->
+      <div *ngFor="let doctor of doctors" class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 flex flex-col pt-4 px-4 pb-0 group cursor-pointer" (click)="bookAppointment(doctor.doctorId)">
+        
+        <div class="flex flex-col items-center flex-grow">
+          <!-- Profile Image -->
+          <div class="w-24 h-24 rounded-full bg-gray-100 overflow-hidden mb-4 border-4 border-white shadow-md relative">
+            <img *ngIf="doctor.profileImagePath; else noDocImage" [src]="env.serverUrl + doctor.profileImagePath" alt="Doctor" class="w-full h-full object-cover">
+            <ng-template #noDocImage>
+              <div class="w-full h-full bg-blue-50 flex items-center justify-center">
+                <svg class="w-12 h-12 text-blue-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+              </div>
+            </ng-template>
+          </div>
+
+          <h3 class="text-xl font-bold text-gray-900 text-center mb-1">Dr. {{ doctor.fullName }}</h3>
+          <p class="text-blue-600 font-medium text-sm mb-3">{{ doctor.specializationName }}</p>
+
+          <!-- Divider -->
+          <div class="w-full border-t border-gray-100 my-2"></div>
+
+          <!-- Info row -->
+          <div class="w-full flex justify-between items-center text-sm text-gray-600 my-2 px-2">
+            <div class="flex items-center">
+              <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              {{ doctor.city }}
+            </div>
+            <div class="flex items-center font-medium" [class.text-green-600]="doctor.averageRating && doctor.averageRating > 4.5">
+              <svg class="w-4 h-4 mr-1 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              {{ doctor.averageRating ? doctor.averageRating.toFixed(1) : 'New' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Book Action -->
+        <div class="bg-blue-50 -mx-4 mt-4 py-3 border-t border-blue-100 flex justify-center text-blue-700 font-semibold group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
+          Book Appointment
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialties Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mb-16 w-full">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
+      <div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-3">Consult top doctors online for any health concern</h2>
+        <p class="text-gray-600 text-lg">Private online consultations with verified doctors in all specialists</p>
+      </div>
+      <button class="mt-4 md:mt-0 px-6 py-2 border border-blue-500 text-blue-500 rounded font-medium hover:bg-blue-50 transition-colors">
+        View All Specialties
+      </button>
+    </div>
+
+    <!-- Circles -->
+    <div class="flex overflow-x-auto pb-6 gap-8 hide-scrollbar">
+      
+      <!-- Spec 1 -->
+      <div class="flex flex-col items-center min-w-[120px] cursor-pointer group">
+        <div class="w-32 h-32 rounded-full bg-pink-50 flex items-center justify-center mb-4 group-hover:shadow-md transition-shadow">
+          <div class="w-16 h-16 rounded-full bg-pink-200 group-hover:scale-110 transition-transform duration-300"></div>
+        </div>
+        <span class="text-center font-medium text-gray-800">Women's Health</span>
+        <span class="text-center text-blue-500 text-sm font-medium mt-1 uppercase">Consult Now</span>
+      </div>
+
+      <!-- Spec 2 -->
+      <div class="flex flex-col items-center min-w-[120px] cursor-pointer group">
+        <div class="w-32 h-32 rounded-full bg-purple-50 flex items-center justify-center mb-4 group-hover:shadow-md transition-shadow">
+          <div class="w-16 h-16 rounded-full bg-purple-200 group-hover:scale-110 transition-transform duration-300"></div>
+        </div>
+        <span class="text-center font-medium text-gray-800">Skin care</span>
+        <span class="text-center text-blue-500 text-sm font-medium mt-1 uppercase">Consult Now</span>
+      </div>
+
+      <!-- Spec 3 -->
+      <div class="flex flex-col items-center min-w-[120px] cursor-pointer group">
+        <div class="w-32 h-32 rounded-full bg-orange-50 flex items-center justify-center mb-4 group-hover:shadow-md transition-shadow">
+          <div class="w-16 h-16 rounded-full bg-orange-200 group-hover:scale-110 transition-transform duration-300"></div>
+        </div>
+        <span class="text-center font-medium text-gray-800">Child Specialist</span>
+        <span class="text-center text-blue-500 text-sm font-medium mt-1 uppercase">Consult Now</span>
+      </div>
+
+      <!-- Spec 4 -->
+      <div class="flex flex-col items-center min-w-[120px] cursor-pointer group">
+        <div class="w-32 h-32 rounded-full bg-teal-50 flex items-center justify-center mb-4 group-hover:shadow-md transition-shadow">
+          <div class="w-16 h-16 rounded-full bg-teal-200 group-hover:scale-110 transition-transform duration-300"></div>
+        </div>
+        <span class="text-center font-medium text-gray-800">General Physician</span>
+        <span class="text-center text-blue-500 text-sm font-medium mt-1 uppercase">Consult Now</span>
+      </div>
+
+      <!-- Spec 5 -->
+      <div class="flex flex-col items-center min-w-[120px] cursor-pointer group">
+        <div class="w-32 h-32 rounded-full bg-blue-50 flex items-center justify-center mb-4 group-hover:shadow-md transition-shadow">
+          <div class="w-16 h-16 rounded-full bg-blue-200 group-hover:scale-110 transition-transform duration-300"></div>
+        </div>
+        <span class="text-center font-medium text-gray-800">Dentist</span>
+        <span class="text-center text-blue-500 text-sm font-medium mt-1 uppercase">Consult Now</span>
+      </div>
+
+      <!-- Spec 6 -->
+      <div class="flex flex-col items-center min-w-[120px] cursor-pointer group">
+        <div class="w-32 h-32 rounded-full bg-red-50 flex items-center justify-center mb-4 group-hover:shadow-md transition-shadow">
+          <div class="w-16 h-16 rounded-full bg-red-200 group-hover:scale-110 transition-transform duration-300"></div>
+        </div>
+        <span class="text-center font-medium text-gray-800">Diet & Nutrition</span>
+        <span class="text-center text-blue-500 text-sm font-medium mt-1 uppercase">Consult Now</span>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<style>
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
