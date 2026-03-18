@@ -1,0 +1,59 @@
+@{
+    ViewData["Title"] = "Signup";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Party Signup</h2>
+        </div>
+        <div class="card-body">
+            <div class="form-group mb-4">
+                <label for="partyDropdown" class="form-label font-weight-bold">Select a Party:</label>
+                @Html.DropDownList("partyId", (SelectList)ViewBag.partydropdownlist, "-- Select Party --", new { @class = "form-select", id = "partyDropdown" })
+            </div>
+
+            <div id="signupDiv" style="display:none;" class="mt-4 p-3 border rounded bg-light">
+                <p class="text-success mb-3"><i class="fas fa-info-circle"></i> This is an internal party. You are eligible to sign up!</p>
+                <button class="btn btn-success btn-lg">
+                    <i class="fas fa-user-plus"></i> Signup Now
+                </button>
+            </div>
+            
+            <div id="statusMessage" class="mt-3 text-muted"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#partyDropdown').change(function () {
+                var partyId = $(this).val();
+                if (partyId) {
+                    $.ajax({
+                        url: '@Url.Action("AllowSignUp", "Parties")',
+                        type: 'GET',
+                        data: { partyId: partyId },
+                        success: function (response) {
+                            if (response.status === "internal") {
+                                $('#signupDiv').show();
+                                $('#statusMessage').text("");
+                            } else {
+                                $('#signupDiv').hide();
+                                $('#statusMessage').text("Sign up is only available for internal parties.");
+                            }
+                        },
+                        error: function () {
+                            alert("Error fetching party status.");
+                        }
+                    });
+                } else {
+                    $('#signupDiv').hide();
+                    $('#statusMessage').text("");
+                }
+            });
+        });
+    </script>
+}

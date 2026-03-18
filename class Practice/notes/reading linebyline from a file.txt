@@ -1,0 +1,30 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.txt";
+
+        try
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine($"Error: The file '{filePath}' was not found.");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

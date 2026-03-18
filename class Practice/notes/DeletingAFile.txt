@@ -1,0 +1,28 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.txt";
+
+        try
+        {
+            // Delete the file
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                Console.WriteLine("File deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("File does not exist.");
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

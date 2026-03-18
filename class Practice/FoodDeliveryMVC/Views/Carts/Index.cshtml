@@ -1,0 +1,44 @@
+﻿@model IEnumerable<FoodDeliveryMVC.Models.Cart>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1>Your Cart</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Food</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Food.Name</td>
+                <td>@item.Qty</td>
+                <td>@item.Price</td>
+                <td>@item.TotalAmount</td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-4">
+        <h3>Total: @Model.Sum(i => i.TotalAmount)</h3>
+        <form asp-action="Checkout" method="post">
+            <button type="submit" class="btn btn-primary">Checkout</button>
+        </form>
+    </div>
+</div>

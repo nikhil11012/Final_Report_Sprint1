@@ -1,0 +1,31 @@
+@page
+@model AddItemModel
+@{
+    ViewData["Title"] = "Add Item";
+}
+
+<h2>Add a New Item</h2>
+<p>Fill in the form below to add a new item to the list.</p>
+
+<!-- Display success message if an item was just added -->
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success">@Model.Message</div>
+}
+
+<!-- Form for adding a new item -->
+<!-- The form posts back to the same page using the OnPost handler -->
+<form method="post">
+    <div class="mb-3">
+        <label for="Name" class="form-label">Item Name</label>
+        <input type="text" class="form-control" asp-for="Name" required />
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Item Description</label>
+        <input type="text" class="form-control" asp-for="Description" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Item</button>
+</form>
+
+<hr />
+<p><a asp-page="/Index">Go back to Items List</a></p>

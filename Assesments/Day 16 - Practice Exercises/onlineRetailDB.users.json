@@ -1,0 +1,9 @@
+[{
+  "_id": {
+    "$oid": "69b6e5b7c05fb10bbbcf4544"
+  },
+  "username": "aakash_sup",
+  "email": "aakash@gmail.com",
+  "password_hash": "hashed_password_123",
+  "role": "customer"
+}]

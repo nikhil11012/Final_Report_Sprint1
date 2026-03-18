@@ -1,0 +1,32 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string dirPath = "C:\\YourDirectory"; // Specify the directory path
+
+        try
+        {
+            if (Directory.Exists(dirPath))
+            {
+                string[] files = Directory.GetFiles(dirPath);
+                Console.WriteLine("Files in directory:");
+
+                foreach (string file in files)
+                {
+                    Console.WriteLine(file);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: The directory '{dirPath}' does not exist.");
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

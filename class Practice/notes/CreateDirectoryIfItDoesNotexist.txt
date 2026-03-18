@@ -1,0 +1,28 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string dirPath = "newDirectory";
+
+        try
+        {
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+                Console.WriteLine("Directory created successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Directory already exists.");
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

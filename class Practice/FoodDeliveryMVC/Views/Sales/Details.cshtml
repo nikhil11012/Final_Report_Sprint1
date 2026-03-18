@@ -1,0 +1,47 @@
+﻿@model FoodDeliveryMVC.Models.Sale
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order Details</h1>
+
+<div>
+    <h4>Sale #@Model.SaleId</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Customer ID</dt>
+        <dd class="col-sm-10">@Model.CustomerId</dd>
+        <dt class="col-sm-2">Date</dt>
+        <dd class="col-sm-10">@Model.Date</dd>
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@Model.Status</dd>
+        <dt class="col-sm-2">Total Amount</dt>
+        <dd class="col-sm-10">@Model.TotalAmount</dd>
+    </dl>
+</div>
+
+<h4>Items in this Order</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Food Name</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in (List<FoodDeliveryMVC.Models.ProductsSold>)ViewBag.Products)
+        {
+            <tr>
+                <td>@item.Food?.Name</td>
+                <td>@item.Qty</td>
+                <td>@item.TotalAmount</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

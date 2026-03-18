@@ -1,0 +1,39 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Items List";
+}
+
+<h2>Items List</h2>
+<p>Below is the list of all items. You can add new items from the <a asp-page="/AddItem">Add Item</a> page.</p>
+
+<!-- Check if there are any items to display -->
+@if (Model.Items.Count == 0)
+{
+    <p>No items found. Please add some items.</p>
+}
+else
+{
+    <!-- Table to display items using a foreach loop -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p><strong>Total Items:</strong> @Model.Items.Count</p>

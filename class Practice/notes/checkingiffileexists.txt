@@ -1,0 +1,19 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.txt";
+        
+        if (File.Exists(filePath))
+        {
+            Console.WriteLine($"The file {filePath} exists.");
+        }
+        else
+        {
+            Console.WriteLine($"The file {filePath} does not exist.");
+        }
+    }
+}

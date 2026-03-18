@@ -1,0 +1,21 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.txt";
+        string additionalContent = "This is new content to append.";
+
+        try
+        {
+            File.AppendAllText(filePath, additionalContent + Environment.NewLine);
+            Console.WriteLine("Text appended to the file.");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

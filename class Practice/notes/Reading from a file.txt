@@ -1,0 +1,29 @@
+Reading from a file"
+
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.txt";
+        
+        try
+        {
+            // Read all text from the file
+            string content = File.ReadAllText(filePath);
+            Console.WriteLine("File Content: ");
+            Console.WriteLine(content);
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine($"Error: The file '{filePath}' was not found.");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
+

@@ -1,0 +1,20 @@
+[{
+  "_id": {
+    "$oid": "69b6e563c05fb10bbbcf453f"
+  },
+  "name": "Samsung Galaxy S23",
+  "category": "Electronics",
+  "price": 75000,
+  "stock": 120,
+  "brand": "Samsung"
+},
+{
+  "_id": {
+    "$oid": "69b6e56fc05fb10bbbcf4541"
+  },
+  "name": "Men Cotton T-Shirt",
+  "category": "Clothing",
+  "price": 799,
+  "stock": 200,
+  "brand": "Nike"
+}]

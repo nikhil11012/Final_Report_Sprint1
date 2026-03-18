@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "69b6e5d9c05fb10bbbcf4547"
+  },
+  "user": "aakash_sup",
+  "order_date": "2024-03-05",
+  "products": [
+    {
+      "product_name": "Samsung Galaxy S23",
+      "price": 75000,
+      "quantity": 1
+    },
+    {
+      "product_name": "Men Cotton T-Shirt",
+      "price": 799,
+      "quantity": 2
+    }
+  ],
+  "total_cost": 76598,
+  "payment_status": "Paid"
+}]

@@ -1,0 +1,37 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "example.txt";
+        byte[] data = new byte[] { 1, 2, 3, 4, 5 };
+
+        try
+        {
+            // Writing bytes to a file
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                fs.Write(data, 0, data.Length);
+                Console.WriteLine("Data written to file.");
+            }
+
+            // Reading bytes from a file
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
+            {
+                byte[] buffer = new byte[fs.Length];
+                fs.Read(buffer, 0, buffer.Length);
+                Console.WriteLine("Data read from file:");
+                foreach (byte b in buffer)
+                {
+                    Console.Write(b + " ");
+                }
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

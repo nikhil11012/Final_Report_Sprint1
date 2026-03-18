@@ -1,0 +1,26 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string sourceFile = "source.txt";
+        string destinationFile = "destination.txt";
+
+        try
+        {
+            // Copy the file from source to destination
+            File.Copy(sourceFile, destinationFile, overwrite: true);
+            Console.WriteLine("File copied successfully.");
+        }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

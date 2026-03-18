@@ -1,0 +1,40 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string dirPath = "C:\\YourDirectory"; // Specify your directory path
+
+        try
+        {
+            if (Directory.Exists(dirPath))
+            {
+                // Get all files
+                string[] files = Directory.GetFiles(dirPath);
+                Console.WriteLine("Files:");
+                foreach (var file in files)
+                {
+                    Console.WriteLine(file);
+                }
+
+                // Get all subdirectories
+                string[] subdirs = Directory.GetDirectories(dirPath);
+                Console.WriteLine("\nSubdirectories:");
+                foreach (var subdir in subdirs)
+                {
+                    Console.WriteLine(subdir);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: Directory '{dirPath}' does not exist.");
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
